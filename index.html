@@ -1,0 +1,2126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NETWORKING</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Highlight.js theme (dark, VS Code-like) -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+
+    <!-- Your page styles -->
+    <style>
+        :root {
+            --bg: #020617;
+            --surface: #020617;
+            --card: #020617;
+            --accent: #38bdf8;
+            --border: #1f2937;
+            --text: #e5e7eb;
+            --muted: #9ca3af;
+            --radius-lg: 24px;
+            --radius-md: 18px;
+            --shadow-soft: 0 22px 48px rgba(15, 23, 42, 0.9);
+            --shadow-card: 0 16px 36px rgba(15, 23, 42, 0.95);
+            --space-mobile-edge: clamp(0.85rem, 3.3vw, 1.2rem);
+            --space-mobile-block: clamp(0.8rem, 2.8vw, 1.05rem);
+            --font-main: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+            --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        /* Global */
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html {
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+            scroll-padding-top: 96px;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle at top left, #0b1120 0, #020617 60%, #020617 100%);
+            color: var(--text);
+            font-family: var(--font-main);
+            line-height: 1.7;
+            font-size: 18px;
+        }
+
+        body {
+            -webkit-font-smoothing: antialiased;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Top bar */
+
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            padding: 1.1rem 1.4rem 1rem;
+            background: linear-gradient(90deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.96));
+            border-bottom: 1px solid rgba(31, 41, 55, 0.98);
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.08rem;
+        }
+
+        .brand {
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            font-size: 1.05rem;
+            color: var(--accent);
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-top: 0.2rem;
+        }
+
+        /* Content layout */
+
+        .content {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 1.4rem 1.2rem 3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Links & anchors */
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        a:focus-visible {
+            outline: 2px solid rgba(56, 189, 248, 0.9);
+            outline-offset: 3px;
+            border-radius: 10px;
+        }
+
+        [id] {
+            scroll-margin-top: 96px;
+        }
+
+        /* Domains & blocks */
+
+        .domain {
+            background: radial-gradient(circle at top, rgba(15, 23, 42, 0.98), #020617 45%, #020617 100%);
+            border-radius: 28px;
+            border: 1px solid rgba(24, 34, 52, 0.99);
+            padding: 1.4rem 1.15rem 1.6rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .domain h1 {
+            font-size: 1.35rem;
+            margin: 0 0 0.8rem;
+            font-weight: 650;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #f9fafb;
+        }
+
+        .domain-intro {
+            margin: -0.3rem 0 1rem;
+            color: var(--muted);
+            font-size: 0.96rem;
+        }
+
+        .category-title {
+            margin: 1.2rem 0 0.45rem;
+            font-size: 1.02rem;
+            font-weight: 670;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #f9fafb;
+        }
+
+        .domain .category-title:first-of-type {
+            margin-top: 0.2rem;
+        }
+
+        .block {
+            margin-top: 0.7rem;
+            padding: 0.9rem 0.8rem 1rem;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(31, 41, 55, 0.99);
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.94));
+            box-shadow: var(--shadow-card);
+        }
+
+        .block + .block {
+            margin-top: 0.7rem;
+        }
+
+        .block h2 {
+            font-size: 1.1rem;
+            margin: 0 0 0.55rem;
+            font-weight: 630;
+            color: var(--accent);
+        }
+
+        .block h3 {
+            font-size: 1.1rem;
+            margin: 0 0 0.55rem;
+            font-weight: 630;
+            color: var(--accent);
+        }
+
+        .block h4 {
+            font-size: 1rem;
+            margin: 0.45rem 0 0.3rem;
+            font-weight: 600;
+            color: #e5e7eb;
+        }
+
+        .block h5 {
+            font-size: 0.96rem;
+            margin: 0.35rem 0 0.25rem;
+            font-weight: 600;
+            color: #e5e7eb;
+        }
+
+        /* Text, lists */
+
+        p {
+            margin: 0 0 0.45rem;
+            font-size: 0.96rem;
+            color: var(--muted);
+            overflow-wrap: anywhere;
+        }
+
+        ul,
+        ol {
+            margin: 0.2rem 0 0.5rem 1.25rem;
+            padding: 0;
+            font-size: 0.94rem;
+            color: var(--muted);
+        }
+
+        li,
+        td,
+        th {
+            overflow-wrap: anywhere;
+        }
+
+        li + li {
+            margin-top: 0.16rem;
+        }
+
+        /* Code blocks */
+
+        pre {
+            margin: 0.4rem 0 0.8rem;
+            border-radius: 1.1rem;
+            background: #0b1120;
+            padding: 0.9rem 0.95rem 1rem;
+            border: 1px solid rgba(31, 41, 55, 0.99);
+            overflow-x: auto;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.95);
+            position: relative;
+        }
+
+        pre::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            border-radius: 1.1rem 0 0 1.1rem;
+            background: linear-gradient(180deg,
+                rgba(56, 189, 248, 0.95),
+                rgba(129, 140, 248, 0.95));
+        }
+
+        pre::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        pre::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        pre::-webkit-scrollbar-thumb {
+            background: rgba(55, 65, 81, 0.9);
+            border-radius: 999px;
+        }
+
+        code {
+            font-family: var(--font-mono);
+            font-size: 0.92rem;
+        }
+
+        /* highlight.js override for readability */
+
+        .hljs {
+            background: transparent !important;
+            color: #e5e7eb;
+            font-family: var(--font-mono);
+            font-size: 0.96rem;
+            line-height: 1.6;
+        }
+
+        /* Inline code */
+
+        p > code,
+        li > code {
+            background: rgba(15, 23, 42, 0.96);
+            padding: 0.1rem 0.35rem;
+            border-radius: 7px;
+            border: 1px solid rgba(31, 41, 55, 0.99);
+            font-size: 0.9rem;
+            overflow-wrap: anywhere;
+        }
+
+        /* Tables */
+
+        .table-wrap {
+            margin: 0.45rem 0 0.85rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(31, 41, 55, 0.99);
+            overflow-x: auto;
+            background: rgba(2, 6, 23, 0.55);
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.72);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 520px;
+        }
+
+        th,
+        td {
+            padding: 0.55rem 0.65rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(31, 41, 55, 0.99);
+        }
+
+        thead th {
+            color: #f9fafb;
+            font-weight: 650;
+            font-size: 0.9rem;
+            background: rgba(15, 23, 42, 0.95);
+        }
+
+        tbody td {
+            color: var(--muted);
+        }
+
+        tbody tr:nth-child(even) td {
+            background: rgba(15, 23, 42, 0.3);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Columns */
+
+        .columns {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 0.6rem;
+            margin: 0.25rem 0 0.45rem;
+        }
+
+        /* Table of contents */
+
+        .toc {
+            padding: 1.05rem 1rem 1.1rem;
+        }
+
+        .toc h2 {
+            margin: 0 0 0.55rem;
+        }
+
+        .toc h3 {
+            font-size: 0.95rem;
+            margin: 0.45rem 0 0.25rem;
+            font-weight: 680;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #f9fafb;
+        }
+
+        .toc ul {
+            margin-top: 0.15rem;
+        }
+
+        .toc a {
+            display: inline-block;
+            padding: 0.08rem 0;
+        }
+
+        .toc-note {
+            margin-top: 0.6rem;
+            color: var(--muted);
+        }
+
+        .domain4-diagram {
+            margin: 0.45rem 0 0.85rem;
+            padding: 0.75rem 0.9rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(31, 41, 55, 0.99);
+            background: rgba(2, 6, 23, 0.55);
+            color: var(--muted);
+            font-family: var(--font-mono);
+            font-size: 0.92rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        pre.domain4-text {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+            overflow: visible;
+            position: static;
+            font-family: var(--font-main);
+            font-size: 0.96rem;
+            line-height: 1.7;
+            color: var(--muted);
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        pre.domain4-text::before {
+            display: none;
+        }
+
+        .domain4-figure {
+            margin: 0;
+        }
+
+        .domain4-figure img {
+            display: block;
+            width: min(100%, 760px);
+            height: auto;
+            border-radius: 0.9rem;
+            border: 1px solid rgba(31, 41, 55, 0.99);
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.55);
+        }
+
+        /* Precedence list */
+
+        .precedence {
+            margin-left: 1.25rem;
+            font-size: 0.93rem;
+            color: var(--muted);
+        }
+
+        .precedence li + li {
+            margin-top: 0.18rem;
+        }
+
+        /* Responsive */
+
+        @media (min-width: 768px) {
+            .content {
+                padding: 1.7rem 1.6rem 3.2rem;
+                gap: 1.7rem;
+            }
+
+            .domain {
+                padding: 1.5rem 1.5rem 1.7rem;
+            }
+
+            .columns {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .domain h1 {
+                font-size: 1.45rem;
+            }
+
+            .block h2 {
+                font-size: 1.12rem;
+            }
+
+            .block h3 {
+                font-size: 1.16rem;
+            }
+
+            .hljs {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 767px) {
+            html,
+            body {
+                font-size: 16px;
+                line-height: 1.62;
+            }
+
+            [id] {
+                scroll-margin-top: 84px;
+            }
+
+            .top-bar {
+                padding: calc(0.75rem + env(safe-area-inset-top, 0px))
+                    calc(0.9rem + env(safe-area-inset-right, 0px))
+                    0.75rem
+                    calc(0.9rem + env(safe-area-inset-left, 0px));
+            }
+
+            .brand {
+                font-size: 1rem;
+                letter-spacing: 0.13em;
+            }
+
+            .subtitle {
+                font-size: 0.82rem;
+            }
+
+            .content {
+                padding: 1rem var(--space-mobile-edge) 2.4rem;
+                gap: 1rem;
+            }
+
+            .domain {
+                padding: 1rem var(--space-mobile-block) 1.2rem;
+                border-radius: 20px;
+            }
+
+            .domain h1 {
+                font-size: 1.2rem;
+                letter-spacing: 0.09em;
+            }
+
+            .category-title {
+                margin-top: 0.95rem;
+                letter-spacing: 0.09em;
+            }
+
+            .block {
+                margin-top: 0.6rem;
+                padding: 0.82rem 0.75rem 0.9rem;
+                border-radius: 14px;
+                box-shadow: 0 10px 24px rgba(15, 23, 42, 0.72);
+            }
+
+            .toc {
+                padding: 0.95rem 0.85rem 1rem;
+            }
+
+            .toc h3 {
+                margin-top: 0.4rem;
+                letter-spacing: 0.08em;
+            }
+
+            .toc li + li {
+                margin-top: 0.28rem;
+            }
+
+            pre {
+                border-radius: 0.9rem;
+                padding: 0.78rem 0.8rem 0.85rem;
+            }
+
+            .domain4-diagram {
+                padding: 0.68rem 0.78rem;
+                font-size: 0.88rem;
+            }
+
+            .table-wrap {
+                margin-top: 0.6rem;
+                overflow: visible;
+                border: 0;
+                border-radius: 0;
+                background: transparent;
+                box-shadow: none;
+            }
+
+            table.responsive-stack {
+                min-width: 0;
+            }
+
+            table.responsive-stack thead {
+                display: none;
+            }
+
+            table.responsive-stack tbody {
+                display: grid;
+                gap: 0.55rem;
+            }
+
+            table.responsive-stack tr {
+                display: grid;
+                border: 1px solid rgba(31, 41, 55, 0.99);
+                border-radius: 0.8rem;
+                overflow: hidden;
+                background: rgba(2, 6, 23, 0.58);
+            }
+
+            table.responsive-stack td {
+                display: grid;
+                grid-template-columns: minmax(7rem, 42%) 1fr;
+                gap: 0.55rem;
+                align-items: start;
+                border-bottom: 1px solid rgba(31, 41, 55, 0.99);
+                padding: 0.5rem 0.66rem;
+                font-size: 0.9rem;
+            }
+
+            table.responsive-stack td::before {
+                content: attr(data-label);
+                color: #cbd5e1;
+                font-weight: 630;
+            }
+
+            table.responsive-stack tr td:last-child {
+                border-bottom: none;
+            }
+
+            table.responsive-stack tbody tr:nth-child(even) td {
+                background: transparent;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .toc-columns {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            html,
+            body {
+                font-size: 15.5px;
+            }
+
+            .subtitle {
+                display: none;
+            }
+
+            .content {
+                padding-bottom: 2rem;
+            }
+
+            .domain h1 {
+                font-size: 1.12rem;
+            }
+
+            .block h2,
+            .block h3 {
+                font-size: 1rem;
+            }
+
+            table.responsive-stack td {
+                grid-template-columns: 1fr;
+                gap: 0.22rem;
+            }
+
+            table.responsive-stack td::before {
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+                font-size: 0.77rem;
+            }
+        }
+
+        /* Optional: print tweaks so PDF keeps background colors */
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+<header class="top-bar">
+    <div class="brand">NETWORKING</div>
+    <div class="subtitle">Study notes organized by domain &amp; topic</div>
+</header>
+
+<main class="content">
+
+    <section class="block toc" aria-label="Table of contents">
+        <h2>Contents</h2>
+        <div class="columns toc-columns">
+            <div>
+                <h3><a href="#domain1">Domain 1</a></h3>
+                <ul>
+                    <li><a href="#d1-core">Core concepts</a></li>
+                    <li><a href="#d1-virtualization">IoT &amp; virtualization</a></li>
+                    <li><a href="#d1-remote-access">VPN &amp; remote access</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3><a href="#domain2">Domain 2</a></h3>
+                <ul>
+                    <li><a href="#d2-lan-addressing">LAN &amp; addressing</a></li>
+                    <li><a href="#d2-topologies">Topologies</a></li>
+                    <li><a href="#d2-wireless">Wireless</a></li>
+                    <li><a href="#d2-wan-access">WAN &amp; internet access</a></li>
+                    <li><a href="#d2-vpn-security">VPN security (IPsec)</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3><a href="#domain3">Domain 3</a></h3>
+                <ul>
+                    <li><a href="#d3-switching">Switching (Layer 2)</a></li>
+                    <li><a href="#d3-routing">Routing (Layer 3)</a></li>
+                    <li><a href="#d3-media">Transmission media</a></li>
+                    <li><a href="#d3-performance">Performance &amp; QoS</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3><a href="#domain4">Domain 4</a></h3>
+                <ul>
+                    <li><a href="#domain4">Text/image source order</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3><a href="#domain5">Domain 5</a></h3>
+                <ul>
+                    <li><a href="#domain5">Text/image source order</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <p class="toc-note">Tip: use your browser search (<code>Ctrl</code>/<code>⌘</code> + <code>F</code>) to find terms quickly.</p>
+    </section>
+
+    <!-- DOMAIN 1 -->
+    <section class="domain" id="domain1">
+        <h1>Domain 1</h1>
+        <p class="domain-intro">Foundational concepts and terminology.</p>
+
+        <h2 class="category-title" id="d1-core">Core Concepts</h2>
+
+        <article class="block">
+            <h3>The Internet</h3>
+            <ul>
+                <li><strong>The Internet:</strong> The world's largest public network.</li>
+                <li><strong>Intranet:</strong> A website that is internal to a business and not seen by the public.</li>
+                <li><strong>Extranet:</strong> If you have an intranet and decide to allow some members from outside inside, you have an extranet.</li>
+            </ul>
+        </article>
+
+        <article class="block">
+            <h3>Types of Networks</h3>
+
+            <h4>Peer-to-Peer</h4>
+            <ul>
+                <li>Most home and small office networks.</li>
+                <li>No central device managing and storing users, files, and folders.</li>
+                <li>Every device is its own server because every device is responsible for managing access to its own resources.</li>
+            </ul>
+
+            <h4>Client-Server</h4>
+            <ul>
+                <li>Network present in many medium to large-sized businesses where a central server hosts all the user accounts, devices, and permissions for the users and devices.</li>
+                <li><strong>Active Directory:</strong> This is the server piece in a Windows-based client-server network.</li>
+            </ul>
+        </article>
+
+        <article class="block">
+            <h3>Data Transmission Types</h3>
+            <ol>
+                <li><strong>Unicast:</strong> Data is transmitted from 1 device to another.</li>
+                <li><strong>Multicast:</strong> One device transmits data to a selected group of devices.</li>
+                <li><strong>Broadcast:</strong> A device transmits data to every device on its network.</li>
+            </ol>
+        </article>
+
+        <h2 class="category-title" id="d1-virtualization">IoT &amp; Virtualization</h2>
+
+        <article class="block">
+            <h3>IoT &amp; Virtualization</h3>
+            <ul>
+                <li><strong>IoT (Internet of Things):</strong> Device that can be controlled remotely.</li>
+                <li><strong>Hypervisor:</strong> Tool that manages physical resources for a VM. Inside hypervisors, we have VMs.</li>
+                <li><strong>Virtual Machines (VMs):</strong> Software-based fully functional instances of an operating system.</li>
+                <li><strong>Type 2 Hypervisors:</strong> Like Type 1 hypervisors, Type 2 also manage and allocate system resources. They are located within operating systems.</li>
+            </ul>
+
+            <h4>Virtual Switches</h4>
+            <ul>
+                <li><strong>External:</strong> Gives the virtual machine using the switch access to whatever the host PC has access to.</li>
+                <li><strong>Internal:</strong> Will have access to themselves and the host.</li>
+                <li><strong>Private:</strong> Will only have access to each other.</li>
+            </ul>
+        </article>
+
+        <h2 class="category-title" id="d1-remote-access">VPN &amp; Remote Access</h2>
+
+        <article class="block">
+            <h3>VPN (Virtual Private Network)</h3>
+            <ul>
+                <li><strong>Virtual Private Network (VPN):</strong> A private network that uses a public one to transmit data from a source to destination.</li>
+            </ul>
+        </article>
+    </section>
+
+    <!-- DOMAIN 2 -->
+    <section class="domain" id="domain2">
+        <h1>Domain 2</h1>
+        <p class="domain-intro">LANs, addressing, topologies, wireless concepts, and WAN / internet access technologies.</p>
+
+        <h2 class="category-title" id="d2-lan-addressing">LAN &amp; Addressing</h2>
+
+        <article class="block">
+            <h3>LAN (Local Area Networks)</h3>
+            <ul>
+                <li><strong>LAN (Local Area Networks):</strong> Networks that are generally confined to a single building or an area of a building. They share common resources.</li>
+            </ul>
+
+            <h4>Wired LAN</h4>
+            <ul>
+                <li>Computers and other devices use Ethernet cables to connect to switches.</li>
+                <li>The switches connect through Ethernet cables to one or more routers which connect to a network or other networks.</li>
+            </ul>
+
+            <h4>Wireless LAN</h4>
+            <ul>
+                <li>Devices connect to each other through a Wireless Access Point often called a Wireless router.</li>
+            </ul>
+        </article>
+
+        <article class="block">
+            <h3>IP Addressing &amp; DMZ</h3>
+
+            <h4>APIPA (Automatic Private IP Addressing)</h4>
+            <ul>
+                <li>Range: <code>169.254.x.x</code></li>
+                <li>Used when a device cannot get an IP address through a DHCP server.</li>
+            </ul>
+
+            <h4>Private IP Addresses</h4>
+            <ul>
+                <li>A private IP address is not routable on a public network.</li>
+                <li>Ranges:</li>
+                <li><code>10...</code></li>
+                <li><code>192.168...</code></li>
+                <li><code>172.16 - 172.31</code></li>
+                <li>(<code>127...</code> is loopback)</li>
+            </ul>
+
+            <h4>DMZ (Demilitarized Zone)</h4>
+            <ul>
+                <li>A type of LAN Perimeter network.</li>
+                <li>Holds devices that need to be seen by both the public and private security zones of a network.</li>
+                <li><strong>Back to Back config:</strong> Firewall on both sides of a perimeter network.</li>
+                <li><strong>Three-leg perimeter:</strong> (Diagram shows Public connecting to Firewall, which splits to Private and Perimeter network).</li>
+            </ul>
+        </article>
+
+        <h2 class="category-title" id="d2-topologies">Topologies</h2>
+
+        <article class="block">
+            <h3>Network Topologies</h3>
+
+            <h4>Star</h4>
+            <ul>
+                <li>A common topology for small networks is a star topology.</li>
+                <li>A central device (usually a switch) is the centerpiece.</li>
+                <li>All devices connect to it.</li>
+            </ul>
+
+            <h4>Bus</h4>
+            <ul>
+                <li>Every device on a network is connected to a backbone cable that runs from one end to the other.</li>
+                <li>Terminators at both ends of the cable.</li>
+                <li>As the signal travels from one device to another, it can bounce off the end if needed.</li>
+                <li>Without terminators, signals bounce and the network won't function.</li>
+                <li>Best for small networks.</li>
+                <li>Any change can bring the entire network down.</li>
+            </ul>
+
+            <h4>Ring</h4>
+            <ul>
+                <li>Mostly used in WAN.</li>
+                <li>Popular 20 years ago, less common now.</li>
+                <li>Fiber Distributed Data Interface (FDDI) networks.</li>
+                <li>Fiber optic cable network in a ring.</li>
+                <li>Data transmission is token-based.</li>
+                <li>A break in the ring takes the network down.</li>
+                <li>FDDI has 2 rings.</li>
+            </ul>
+
+            <h4>Mesh</h4>
+            <ul>
+                <li><strong>Full mesh connections:</strong> <code>h(h - 1) / 2</code> <em>(h = number of devices)</em></li>
+                <li>Common in WAN.</li>
+                <li>Every device has a connection to every other device.</li>
+            </ul>
+        </article>
+
+        <article class="block">
+            <h3>Repeaters</h3>
+            <ul>
+                <li>Wireless bridges can also serve as repeaters.</li>
+                <li>A signal that is reaching maximum distance can be boosted.</li>
+            </ul>
+        </article>
+
+        <h2 class="category-title" id="d2-wireless">Wireless</h2>
+
+        <article class="block">
+            <h3>Wireless Networks</h3>
+            <ul>
+                <li>Wireless networks operate on IEEE 802.11.</li>
+                <li><strong>2.4 GHz vs 5 GHz</strong></li>
+                <li>5 GHz: faster, shorter range.</li>
+                <li>The 2 frequencies are not compatible on the same network.</li>
+                <li>802.11n supports both.</li>
+            </ul>
+
+            <h4>Wireless Standards Table</h4>
+            <div class="table-wrap">
+                <table class="responsive-stack">
+                    <thead>
+                        <tr>
+                            <th>Standard</th>
+                            <th>Frequency</th>
+                            <th>Speed</th>
+                            <th>Indoor Range</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Standard">802.11a</td>
+                            <td data-label="Frequency">5 GHz</td>
+                            <td data-label="Speed">54 Mbps</td>
+                            <td data-label="Indoor Range">30m / 100ft</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Standard">802.11b</td>
+                            <td data-label="Frequency">2.4</td>
+                            <td data-label="Speed">11 Mbps</td>
+                            <td data-label="Indoor Range">35m / 115ft</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Standard">802.11g</td>
+                            <td data-label="Frequency">2.4</td>
+                            <td data-label="Speed">54 Mbps</td>
+                            <td data-label="Indoor Range">38m / 125ft</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Standard">802.11n</td>
+                            <td data-label="Frequency">2.4 or 5</td>
+                            <td data-label="Speed">300 up to 600 (on dual link)</td>
+                            <td data-label="Indoor Range">70m / 230ft</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Standard">802.11ac</td>
+                            <td data-label="Frequency">5</td>
+                            <td data-label="Speed">up to 1300</td>
+                            <td data-label="Indoor Range">~27m / 90ft</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+
+        <article class="block">
+            <h3>Types of Network Security</h3>
+            <ul>
+                <li><strong>WEP (Wired Equivalent Privacy):</strong> Weak, has been cracked.</li>
+                <li><strong>WPA (Wi-Fi Protected Access):</strong> Stronger.</li>
+                <li><strong>WPA2:</strong> Strongest (802.11i).</li>
+            </ul>
+
+            <h4>Port-based network access control</h4>
+            <ul>
+                <li>Can be used with wired or wireless.</li>
+                <li>Supplicant Auth Network.</li>
+            </ul>
+
+            <h4>Two types of wireless networks</h4>
+            <ol>
+                <li>Infrastructure</li>
+                <li>P2P (Point to Point / Ad hoc)</li>
+            </ol>
+        </article>
+
+        <article class="block">
+            <h3>Infrastructure vs. P2P</h3>
+            <ul>
+                <li><strong>Infrastructure:</strong> One in which one or more wireless access points are the central point of the network.</li>
+                <li>The Service Set Identifier (SSID) is the name of the network.</li>
+                <li><strong>P2P:</strong> Has no central wireless access point.</li>
+                <li>2 devices connect to each other.</li>
+                <li>Not as secure.</li>
+                <li><strong>Wireless bridging:</strong> Used to connect two wired segments of a network.</li>
+                <li>In bridge mode, networks with different 802.11 standards can connect to each other.</li>
+            </ul>
+        </article>
+
+        <h2 class="category-title" id="d2-wan-access">WAN &amp; Internet Access</h2>
+
+        <article class="block">
+            <h3>WAN (Wide Area Network)</h3>
+            <ul>
+                <li>Networks that cover multiple geographic areas and are usually a collection of LANs.</li>
+            </ul>
+
+            <h4>Dial-up Line</h4>
+            <ul>
+                <li>Still the only means of getting to the outside world for some users.</li>
+                <li>A phone line and a server that accepts dial-up connections are needed.</li>
+                <li>A very, very slow connection by today's standards.</li>
+                <li>The top advertised speed is <strong>56 Kbps</strong>.</li>
+                <li><strong>38 Kbps</strong> or so is about as fast as it gets.</li>
+            </ul>
+
+            <h4>Leased Lines</h4>
+            <ul>
+                <li>Dedicated connection from one location to another.</li>
+                <li>Whoever leases the line has the full consistent bandwidth of that line.</li>
+            </ul>
+
+            <h4>T-Carrier Lines</h4>
+            <ul>
+                <li><strong>T1:</strong> Uses 24 64 Kbps channels of data plus another 8 for overhead for a total of <strong>1.544 Mbps</strong>.</li>
+                <li>Customers can lease a partial T1 line.</li>
+                <li><strong>T3:</strong> <strong>44.736 Mbps</strong>.</li>
+                <li>Equivalent to 28 x T1 lines.</li>
+                <li>Uses 672 64 Kbps channels.</li>
+                <li>Can lease partially.</li>
+            </ul>
+        </article>
+
+        <article class="block">
+            <h3>ISDN (Integrated Services Digital Network)</h3>
+
+            <h4>2 Types</h4>
+            <ol>
+                <li><strong>Basic Rate Interface (BRI):</strong> Uses 2 64 Kbps channels for a total speed of <strong>128 Kbps</strong> (more than double that of a dial-up).</li>
+                <li><strong>Primary Rate Interface (PRI):</strong> It uses 23 64 Kbps channels for a total speed of <strong>1.536 Mbps</strong>. Runs on a T1 circuit line.</li>
+            </ol>
+        </article>
+
+        <article class="block">
+            <h3>Internet Connections (DSL, Cable, Cellular, Satellite)</h3>
+
+            <h4>DSL (Digital Subscriber Line)</h4>
+            <ul>
+                <li><strong>Digital Subscriber Line:</strong> A customer has a dedicated phone line from the origin to a telco office.</li>
+                <li><strong>Synchronous DSL (SDSL):</strong> Upload and download speeds are the same. Often used in businesses that need fast uploads.</li>
+                <li><strong>Asynchronous DSL (ADSL):</strong> Most commonly used in homes and businesses. Different upload and download speeds (download speed being higher).</li>
+            </ul>
+
+            <h4>Cable Modems</h4>
+            <ul>
+                <li>Speeds tend to be faster overall than DSL.</li>
+                <li>DSL connections are on dedicated lines and cable modem connections are typically not.</li>
+                <li>Cable internet tends to run over shared bandwidth.</li>
+                <li>Speeds tend to be slower during peak usage hours.</li>
+            </ul>
+
+            <h4>Cellular &amp; Satellite</h4>
+            <ul>
+                <li>5G - highest</li>
+                <li>4G LTE is faster than 4G</li>
+                <li>Speed varies based on proximity to a tower</li>
+                <li>Satellite</li>
+            </ul>
+        </article>
+
+        <article class="block">
+            <h3>Digital Lines (E1/T1)</h3>
+            <ul>
+                <li><strong>E1 and E3:</strong> European equivalent.</li>
+                <li><strong>E1:</strong> 32 64kbps channels = 2.048 Mbps.</li>
+                <li><strong>E3:</strong> 16 x E1 lines = 34.368 Mbps.</li>
+                <li><strong>Slowest to fastest:</strong> T1, E1, E3, T3.</li>
+            </ul>
+        </article>
+
+        <h2 class="category-title" id="d2-vpn-security">VPN Security (IPsec)</h2>
+
+        <article class="block">
+            <h3>IPsec (Internet Protocol Security)</h3>
+            <ul>
+                <li>Many VPNs use IPsec.</li>
+                <li>Protocols that authenticate and encrypt data packets over VPN.</li>
+                <li>Provides confidentiality and integrity of data which is crucial for making sure data over VPN stays private.</li>
+            </ul>
+
+            <h4>IPsec Protocols</h4>
+            <ol>
+                <li><strong>Security Association (SA):</strong> Generates the auth and encryption keys used in IPsec.</li>
+                <li><strong>Auth Header (AH):</strong> Provides auth and integrity of data but <strong>not</strong> data encryption.</li>
+                <li><strong>Encapsulating Security Payload (ESP):</strong> Provides auth, integrity, and encryption of data.</li>
+            </ol>
+        </article>
+    </section>
+
+    <!-- DOMAIN 3 -->
+    <section class="domain" id="domain3">
+        <h1>Domain 3</h1>
+        <p class="domain-intro">Switching, routing, transmission media, and performance/QoS.</p>
+
+        <h2 class="category-title" id="d3-switching">Switching (Layer 2)</h2>
+
+        <article class="block">
+            <h3>Network Devices: Hubs vs. Switches</h3>
+
+            <h4>Hubs (Legacy/Physical Layer)</h4>
+            <ul>
+                <li><strong>Function:</strong> Hubs are unintelligent devices that do not store MAC addresses. They simply receive a signal and broadcast (flood) it out to <em>all</em> connected ports.</li>
+                <li><strong>Efficiency:</strong> Very inefficient; connected devices must check every packet to see if it is meant for them.</li>
+                <li><strong>Current Use (Repeaters):</strong> Hubs are largely extinct for directing traffic but are useful as <strong>repeaters</strong>.</li>
+                <li><strong>Signal Boosting:</strong> Standard Ethernet cables (Twisted Pair) have a max distance of <strong>328 feet (100 meters)</strong>. A hub placed in the middle can boost the signal to extend this range (e.g., covering a 500ft run).</li>
+                <li><strong>Topology:</strong> Directly connected routes on a hub usually involve just 2 devices.</li>
+            </ul>
+
+            <h4>Switches (Data Link Layer/Layer 2)</h4>
+            <ul>
+                <li><strong>Function:</strong> Intelligent devices that use <strong>MAC Address Tables</strong> to direct traffic only to the specific destination device.</li>
+                <li><strong>MAC Learning:</strong><br>When a device connects and transmits data, the switch learns its MAC address (hardware address).<br>If the switch knows the destination MAC, it sends data directly to that port.<br>If the switch <em>doesn't</em> know the destination MAC, it floods the data to all ports to find the recipient.</li>
+                <li><strong>Maintenance:</strong> Entries in the MAC table are erased from memory after a period of inactivity to save space.</li>
+            </ul>
+        </article>
+
+        <article class="block">
+            <h3>Switch Architecture &amp; Features</h3>
+
+            <h4>Switching Methods</h4>
+            <ol>
+                <li><strong>Store and Forward:</strong> The switch receives the <em>entire</em> frame and checks for errors (CRC check) before sending.<br><em>Pros:</em> No corrupt data sent.<br><em>Cons:</em> Slower (higher latency).</li>
+                <li><strong>Cut-Through:</strong> The switch reads only the header (to find the destination MAC) and forwards immediately.<br><em>Pros:</em> Faster.<br><em>Cons:</em> Does not check for errors; corrupt frames may be propagated (discarded at destination).</li>
+            </ol>
+
+            <h4>Port Types &amp; Cables</h4>
+            <ul>
+                <li><strong>Standard Ports:</strong> Typically 10 Mbps, 100 Mbps (Fast Ethernet), 1 Gbps (Gigabit), or 10 Gbps.</li>
+                <li><strong>Uplink Ports / MDI:</strong> Faster ports designed to connect switches together.</li>
+                <li><strong>Straight-through cables:</strong> Used for connecting unlike devices (Switch &lt;-&gt; Router) or when using Uplink ports.</li>
+                <li><strong>Crossover cables:</strong> Historically used to connect like devices (Switch &lt;-&gt; Switch).</li>
+                <li><em>Note:</em> Most modern switches handle straight/crossover automatically (Auto-MDIX).</li>
+            </ul>
+
+            <h4>Performance Specs</h4>
+            <ul>
+                <li><strong>Backplane Speed:</strong> The total throughput a switch is capable of handling at any one time.</li>
+                <li><em>Math Example:</em> A 48-port switch running at 100 Mbps per port has a potential throughput of <strong>4.8 Gbps</strong> (<code>48 x 100 Mbps</code>).</li>
+            </ul>
+
+            <h4>Types of Switches</h4>
+            <ul>
+                <li><strong>Unmanaged:</strong> Plug-and-play; no configuration possible.</li>
+                <li><strong>Managed:</strong> Configurable by administrators. Supports IP addresses, VLANs, and security settings.</li>
+                <li><strong>Layer 2 Switch:</strong> Uses MAC addresses only; cannot route between different networks.</li>
+                <li><strong>Layer 3 (Multilayer) Switch:</strong> Can use IP addresses to route traffic between networks (inter-VLAN routing).</li>
+            </ul>
+        </article>
+
+        <article class="block">
+            <h3>Switch Security &amp; Redundancy</h3>
+
+            <h4>Security Options</h4>
+            <ul>
+                <li><strong>Port Security:</strong> Managed switches can memorize specific MAC addresses allowed on a port.</li>
+                <li><em>Example:</em> If a port is configured to allow only 1 specific address, it prevents rogue devices from plugging in and accessing the network.</li>
+            </ul>
+
+            <h4>Redundancy &amp; Spanning Tree Protocol (STP)</h4>
+            <ul>
+                <li><strong>Redundancy:</strong> Setting up multiple links/devices so if one fails, another takes over (failover). It can also assist with <strong>load balancing</strong> (sharing workload to increase performance).</li>
+                <li><strong>The Problem (Loops):</strong> Redundant links can accidentally create physical loops (e.g., plugging a switch into itself). This causes <strong>Broadcast Storms</strong>, where broadcast frames flood the switch endlessly, crashing the network.</li>
+                <li><strong>The Solution (STP):</strong><br><strong>Spanning Tree Protocol (STP)</strong> uses the Spanning Tree Algorithm (STA).<br>It transmits <strong>BPDUs</strong> (Bridge Protocol Data Units) to detect loops.<br>It automatically blocks (destroys) redundant paths to prevent loops while keeping a backup path available.</li>
+            </ul>
+        </article>
+
+        <article class="block">
+            <h3>Switches, Ports, and VLANs</h3>
+            <h4>Indicators &amp; Ports</h4>
+            <ul>
+                <li>On a switch, a yellow light indicator usually indicates that a connection is running at less than full speed.</li>
+                <li>For example, a Fast Ethernet cable plugged into a Gigabit Ethernet port will run at Fast Ethernet speed and display a yellow light.</li>
+                <li>Uplink ports tend to be faster than regular ports. They also accept both straight-through and crossover cables.</li>
+            </ul>
+
+            <h4>Unmanaged Switch</h4>
+            <ul>
+                <li>An unmanaged switch has no configuration to set up. Thus, it is also known as a plug-and-play switch.</li>
+            </ul>
+
+            <h4>VLAN Assignment</h4>
+            <ul>
+                <li>If more users are assigned to Project Management, which uses VLAN2, the floor plan will adjust so more physical ports are assigned from VLAN1 to VLAN2.</li>
+            </ul>
+
+            <h4>Port Security &amp; Control</h4>
+            <ul>
+                <li>Administrators can use switches to control the flow of network traffic.</li>
+                <li>They do this by controlling the number of MAC addresses each switch port will memorize.</li>
+                <li>For example, if a port memorizes only one address, then it will deny access to any rogue devices that do not use that MAC address.</li>
+            </ul>
+
+            <h4>Redundancy &amp; Load Balancing</h4>
+            <ul>
+                <li>Hardware redundancy can also have the benefit of load balancing, which allows multiple devices to share a workload.</li>
+            </ul>
+
+            <h4>Backplane Speed</h4>
+            <ul>
+                <li>The number of ports X the port speed = backplane speed.</li>
+                <li>100 Mbps x 48 ports = 4.8 Gbps.</li>
+                <li>Thus 4.8 Gbps is the backplane speed for this switch.</li>
+            </ul>
+
+            <h4>Forwarding Methods</h4>
+            <ul>
+                <li>The data transmission method for a switch that receives a frame, checks it for errors, and then sends it is the store and forward method.</li>
+                <li>In the cut-through method of data transmission, once a destination MAC address is known, the frame is sent.</li>
+            </ul>
+
+            <h4>Hubs vs. Switches</h4>
+            <ul>
+                <li>Hubs do not store any intelligent information. Switches store MAC addresses in MAC address tables.</li>
+            </ul>
+
+            <h4>Virtual Switches</h4>
+            <ul>
+                <li>There are three common types of virtual switches: external, which allows for a connection to an external network; internal, which allows for a virtual machine to connect to a host; and private, which allows for virtual networks to be isolated.</li>
+            </ul>
+
+            <h4>Spanning Tree Protocol (STP)</h4>
+            <ul>
+                <li>A Spanning Tree Protocol (STP) transmits Bridge Protocol Data Units (BPDUs) to identify redundant links in switches.</li>
+            </ul>
+        </article>
+
+        <h2 class="category-title" id="d3-routing">Routing (Layer 3)</h2>
+
+        <article class="block">
+            <h3>Routers &amp; Routing (Layer 3)</h3>
+
+            <h4>Function</h4>
+            <ul>
+                <li>Routers direct traffic <em>between</em> different networks using IP addresses.</li>
+                <li><strong>Network Segmentation:</strong> Breaking a network physically (different buildings) or logically (VLANs) to improve performance and security.</li>
+            </ul>
+
+            <h4>Routing Tables</h4>
+            <ul>
+                <li>Stored in the router's <strong>RAM</strong>.</li>
+                <li><strong>Convergence:</strong> The process of routers updating their tables to reflect network changes (topology changes). This can cause temporary slowdowns.</li>
+                <li><strong>Memory Issues:</strong> Protocols like <strong>BGP</strong> (Border Gateway Protocol) create massive tables that can overload memory; <strong>RIP</strong> uses very little.</li>
+            </ul>
+
+            <h4>Routing Protocols</h4>
+            <ol>
+                <li><strong>RIP (Routing Information Protocol):</strong><br><strong>Type:</strong> Distance-vector.<br><strong>Metric:</strong> Hop count (number of routers to destination).<br><em>Downside:</em> Does not consider connection speed (a slow path with fewer hops is chosen over a fast path with more hops).</li>
+                <li><strong>OSPF (Open Shortest Path First):</strong><br><strong>Type:</strong> Link-state.<br><strong>Metric:</strong> Uses bandwidth/speed <em>and</em> hops.<br><em>Upside:</em> Smarter routing decisions based on link performance.</li>
+                <li><strong>Static Routes:</strong> Manually defined by an administrator (commands: <code>route add</code>, <code>route delete</code>). Used when traffic <em>must</em> go through a specific router.</li>
+                <li><strong>Default Route (0.0.0.0):</strong> The "Gateway of Last Resort." If traffic is destined for a network the router doesn't know, it is sent here (usually the ISP connection).</li>
+            </ol>
+
+            <h4>Metrics (Priority)</h4>
+            <ul>
+                <li>The lower the metric, the better the route.</li>
+                <li><strong>Priority Order:</strong> Directly Connected Routes (Lowest Metric) &lt; Static Routes &lt; Dynamic Routes.</li>
+            </ul>
+        </article>
+
+        <article class="block">
+            <h3>Routing Concepts and Commands</h3>
+            <h4>Directly Connected Routes</h4>
+            <ul>
+                <li>A directly connected route involves a connection between two devices.</li>
+                <li>Usually, this connection is between a device and a router or two routers.</li>
+                <li>A direct connection is best suited for two routers connected to each other.</li>
+            </ul>
+
+            <h4>Static Route Syntax</h4>
+            <ul>
+                <li>The syntax for a static route involves the route add command, the network address, the word, MASK, the subnet mask, and then the IP address of the device to route through.</li>
+                <li>Thus, the complete command is: <code>route add 192.168.2.0 MASK 255.255.255.0 192.168.2.1</code>.</li>
+            </ul>
+            <ol>
+                <li>Step 1: Type: route add 192.168.2.0 MASK 255.255.255.0 192.168.2.1</li>
+                <li>Step 2: Select the Enter key on the keyboard</li>
+            </ol>
+
+            <h4>Routing Protocols</h4>
+            <ul>
+                <li>Transmission Control Protocol/Internet Protocol (TCP/IP) is the default dynamic routing protocol.</li>
+                <li>Routing Information Protocol (RIP) is a distance-vector routing protocol that uses hop counts to determine the best path in which traffic should flow.</li>
+                <li>It would determine that the best path in the image would be Router A to Router D at 10 Mbps, because even though the speed is slower, the route only takes one hop.</li>
+                <li>Open Shortest Path First (OSPF) is a link-state routing protocol that uses hops, speed, and other factors in determining the best routes for a network.</li>
+                <li>Among the options, Border Gateway Protocol (BGP) takes up the most memory within a router because it tends to build very large routing tables.</li>
+            </ul>
+
+            <h4>Routes, Metrics, and Default Route</h4>
+            <ul>
+                <li>The IP address 0.0.0.0 in a routing table indicates the default route for traffic on that network.</li>
+                <li>The lower the metric (as indicated in the metric column), the better the route. In the image, the route 0.0.0.0 has a metric number of 25, the lowest among the four options provided.</li>
+                <li>A static route is a route used to specify a consistent path from a source to a destination.</li>
+                <li>A dynamic route adjusts how traffic is routed from a source to a destination based on workload, bandwidth, and similar factors.</li>
+                <li>A default route is a route used when no other specific route is listed for a destination IP address or network.</li>
+            </ul>
+
+            <h4>Convergence</h4>
+            <ul>
+                <li>In convergence, a root bridge router learns the topology of an entire network and then distributes it to the remaining routers on the network.</li>
+            </ul>
+        </article>
+
+        <h2 class="category-title" id="d3-media">Transmission Media</h2>
+
+        <article class="block">
+            <h3>Transmission Media (Cables)</h3>
+
+            <h4>Twisted Pair (Copper)</h4>
+            <ul>
+                <li><strong>Standard:</strong> Ethernet, uses <strong>RJ-45</strong> connectors (larger than phone RJ-11).</li>
+                <li><strong>Distance Limit:</strong> 100 meters (328 feet).</li>
+            </ul>
+
+            <h5>Types</h5>
+            <ul>
+                <li><strong>UTP (Unshielded):</strong> Standard, cheap, twists prevent some EMI.</li>
+                <li><strong>STP (Shielded):</strong> Expensive, extra shielding for high EMI areas.</li>
+                <li><strong>Plenum:</strong> Fire-retardant jacket, low smoke (for air ducts/ceilings).</li>
+            </ul>
+
+            <h5>Categories</h5>
+            <ul>
+                <li><strong>CAT3:</strong> 10 Mbps (Obsolete).</li>
+                <li><strong>CAT5:</strong> 100 Mbps (Fast Ethernet).</li>
+                <li><strong>CAT5e:</strong> 1 Gbps (Gigabit).</li>
+                <li><strong>CAT6:</strong> 10 Gbps (up to 55 meters).</li>
+                <li><strong>CAT6a:</strong> 10 Gbps (full 100 meters).</li>
+            </ul>
+
+            <h4>Fiber Optic</h4>
+            <ul>
+                <li><strong>Transmission:</strong> Uses light (photons) instead of electricity.</li>
+                <li><strong>Pros:</strong> Immune to EMI (electromagnetic interference), long distance (up to 70km), high speed (10 Gbps+).</li>
+                <li><strong>Cons:</strong> Expensive, strict bend radius.</li>
+            </ul>
+
+            <h5>Types</h5>
+            <ul>
+                <li><strong>Single-mode:</strong> One ray of light, extremely long distances.</li>
+                <li><strong>Multimode:</strong> Multiple rays, shorter range (~600m), used for high-speed LAN backbones.</li>
+            </ul>
+        </article>
+
+        <h2 class="category-title" id="d3-performance">Performance &amp; QoS</h2>
+
+        <article class="block">
+            <h3>Performance &amp; Interference Factors</h3>
+
+            <h4>Interference Sources</h4>
+            <ul>
+                <li><strong>Wired:</strong> Power cables, Fluorescent lighting, EMI, Crosstalk (signal bleeding between wires), damaged cables.</li>
+                <li><strong>Wireless:</strong> Heavy machinery (elevators), Physical obstructions (Walls - especially blocks 5GHz), 2.4GHz interference (Microwaves, cordless phones).</li>
+            </ul>
+
+            <h4>Optimization Tools</h4>
+            <ul>
+                <li><strong>QoS (Quality of Service):</strong> Controls how resources are used to prioritize specific traffic (e.g., Voice over IP).</li>
+                <li><strong>Port Forwarding:</strong> Configuring a router to send specific traffic to a specific device/port within the LAN.</li>
+            </ul>
+
+            <h4>Security Note</h4>
+            <ul>
+                <li>Data should be encrypted. Intercepted data is useless without the decryption key.</li>
+                <li>Power fluctuations (spikes/brownouts) can corrupt data transmission.</li>
+            </ul>
+        </article>
+
+        <article class="block">
+            <h3>QoS, VLAN Scenarios, and Media Limits</h3>
+            <h4>QoS Setup</h4>
+            <ul>
+                <li>Through QoS, users can set up rules that designate the priority of app or service traffic.</li>
+                <li>They can select a service, such as Skype, and assign it a priority, such as Bulk, Standard, or Maximum. Maximum indicates the highest priority.</li>
+                <li>They can then save the changes and enable the QoS rule so it takes effect.</li>
+            </ul>
+            <ol>
+                <li>Step 1: Select the Service Name drop-down arrow</li>
+                <li>Step 2: Select skype [ 0 ~ 0 ]</li>
+                <li>Step 3: Select Add</li>
+                <li>Step 4: Select the Priority drop-down arrow</li>
+                <li>Step 5: Select Maximum</li>
+                <li>Step 6: Select Save</li>
+            </ol>
+
+            <h4>VLAN Scenario</h4>
+            <ul>
+                <li>The scenario describes three separate groups: students, administrative staff, and a repair shop.</li>
+                <li>The groups are isolated from one another and require different network permissions.</li>
+                <li>From a logical standpoint, three VLANs or logical networks are appropriate for the scenario, one for each group.</li>
+            </ul>
+
+            <h4>Media Limits</h4>
+            <ul>
+                <li>The top distance for data transmission over twisted-pair cables is 328 feet (100 meters).</li>
+                <li>A multimode fiber optic cable can carry multiple rays of light but the maximum distance the signals can be carried is 600 meters.</li>
+                <li>As multimode fiber optic cables carry signals for a maximum of 600 meters, longer distances need single-mode fiber.</li>
+                <li>Plenum cable is required for running cables through walls and ceilings as plenum cable does not give off a noxious odor in case of fire.</li>
+            </ul>
+
+            <h4>Wireless &amp; Wired Interference</h4>
+            <ul>
+                <li>For 2.4 GHz networks, channels 1, 6, and 11 are safe to use to avoid overlapping on a 2.4 GHz network.</li>
+                <li>Transmission in wired networks can be affected by electromagnetic interference (EMI), fluorescent lighting, and nearby power cables.</li>
+                <li>Care should be taken to place cables away from these sources.</li>
+                <li>Walls, elevator shafts, and cordless phones (which run on a 2.4 GHz frequency) can all interfere with a wireless network signal.</li>
+            </ul>
+        </article>
+    </section>
+
+
+	    <!-- DOMAIN 4 -->
+	    <section class="domain" id="domain4">
+	        <h1>Domain 4</h1>
+	
+	        <article class="block">
+	            <p>Domain 4:</p>
+	
+	            <h3>2 models for how data goes from source to destination</h3>
+	
+	            <h4>Open Systems Interconnection (OSI) model</h4>
+	            <ul>
+	                <li>7 layer model that defines how data gets from what we see down to 1s and 0s as to travels from source to destination</li>
+	                <li>when data moves from source to destination via the pshycial layer of the psi model data is moved in bits of 1s and 0s</li>
+	            </ul>
+	
+	            <div class="domain4-diagram">source  &lt;———————————&gt; Destination
+	
+	                  Pshycal Layer</div>
+	
+	            <p>Before the data moving is crunched into bits it goes through a process of going from segments to packets to frames as it moves down from layers through 2 of the osi model</p>
+	        </article>
+
+        <article class="block">
+            <figure class="domain4-figure">
+                <img src="domain%204.1.rtfd/Pasted%20Graphic%201.png" alt="Pasted Graphic 1.png">
+            </figure>
+        </article>
+
+        <article class="block">
+            <figure class="domain4-figure">
+                <img src="domain%204.1.rtfd/Pasted%20Graphic.png" alt="Pasted Graphic.png">
+            </figure>
+        </article>
+
+        <article class="block">
+            <figure class="domain4-figure">
+                <img src="domain%204.1.rtfd/Pasted%20Graphic%202.png" alt="Pasted Graphic 2.png">
+            </figure>
+	        </article>
+	
+	        <article class="block">
+	            <h3>1-3 are hardware layers while 4-7 are mainly protocol based</h3>
+	            <p>comparing 2 transport layer protocols tcp and udp</p>
+	        </article>
+
+        <article class="block">
+            <figure class="domain4-figure">
+                <img src="domain%204.1.rtfd/Pasted%20Graphic%203.png" alt="Pasted Graphic 3.png">
+            </figure>
+        </article>
+
+        <article class="block">
+            <figure class="domain4-figure">
+                <img src="domain%204.1.rtfd/Pasted%20Graphic%204.png" alt="Pasted Graphic 4.png">
+            </figure>
+        </article>
+
+        <article class="block">
+            <figure class="domain4-figure">
+                <img src="domain%204.1.rtfd/Pasted%20Graphic%205.png" alt="Pasted Graphic 5.png">
+            </figure>
+        </article>
+
+        <article class="block">
+            <figure class="domain4-figure">
+                <img src="domain%204.1.rtfd/Pasted%20Graphic%206.png" alt="Pasted Graphic 6.png">
+            </figure>
+	        </article>
+	
+	        <article class="block">
+	            <h3>Data goes into segments, then packets, then frames, and then bits as it moves down the last four layers of the OsI model</h3>
+	
+	            <h4>Transmission Control Protocol (TCP)</h4>
+	            <p>Also known as the TCP/IP model</p>
+	            <p>Four layers</p>
+	            <ol>
+	                <li>Application</li>
+	                <li>Transport</li>
+	                <li>Internet</li>
+	                <li>Network access</li>
+	            </ol>
+	
+	            <h5>Application</h5>
+	            <p>Performs the duties of the Application, Presentation, and Session layers of the OSI model Responsible for formatting data and opening a session with a recipient of the data</p>
+	
+	            <h5>Transport</h5>
+	            <ul>
+	                <li>Performs data segmentation</li>
+	                <li>Same as the Transport layer of the OSI model which is data segmentation</li>
+	            </ul>
+	
+	            <h5>Internet</h5>
+	            <p>Mirrors the Network layer of the OSI model Responsible for getting data into packets and addressing those packets</p>
+	
+	            <h5>Network access</h5>
+	            <ul>
+	                <li>The same duties as the Data-link and Physical layers of the OSI model</li>
+	                <li>Breaks data down into frames, adds a physical address to the frames, breaks the data down into bits, and transports those bits over physical media from a source to a destination</li>
+	            </ul>
+	
+	            <p>within the TCP model layers have devices protocols and applications used at each layer</p>
+	
+	            <h5>Application</h5>
+	            <ul>
+	                <li>All of the software pieces of data http dns text images</li>
+	                <li>encryption also takes place on this layer</li>
+	                <li>asswell as session protocols such as RPC PPTP</li>
+	            </ul>
+	
+	            <h5>Transport layer</h5>
+	            <p>TCP is the main protocol</p>
+	
+	            <h5>Internet layer</h5>
+	            <ul>
+	                <li>IP is the main protocol</li>
+	                <li>Routers are used on this layer</li>
+	            </ul>
+	
+	            <h5>Network acces</h5>
+	            <p>switches ethernet cables</p>
+	        </article>
+	
+	        <article class="block">
+	            <h3>IP ADDRESSING</h3>
+	
+	            <ul>
+	                <li>Most common ip address IPv4 addresses</li>
+	                <li>An ip address in its simplest form is a logical address for a device on a network</li>
+	                <li>IPv4 addresses are 32-bit addresses which literally means 32 binary numbers</li>
+	                <li>They display however in blocks of 4 decimal numbers in blocks ranging from 0 to 255</li>
+	            </ul>
+	
+	            <h4>Subnetting</h4>
+	            <p>Subnetting is the act of splitting up physical networks into logical subnetworks</p>
+	
+	            <h5>Example</h5>
+	            <ul>
+	                <li>A network infrastructure with three areas: administrative, training, and repair</li>
+	                <li>You probably would not want all three of these areas on the same logical network</li>
+	            </ul>
+	
+	            <p>Subnetting allows you to split up this physical network into three logical networks</p>
+	            <p>The only points for subnetting you really need to know are what it does, and the purpose of a subnet mask</p>
+	        </article>
+
+        <article class="block">
+            <figure class="domain4-figure">
+                <img src="domain%204.1.rtfd/Pasted%20Graphic%207.png" alt="Pasted Graphic 7.png">
+            </figure>
+	        </article>
+	
+	        <article class="block">
+	            <h3>ipconfig gives us Ip address information if I run ipconfig we see ip address information for each network adapter on device</h3>
+	            <ul>
+	                <li><code>ipconfig /all</code> we get further information such as the DHCP server and DNS server or servers for each network adapter</li>
+	                <li><code>ipconfig /release</code> will release these ip addresses and lose network connectivity</li>
+	                <li><code>Ipconfig /renew</code> is used when you need to try to obtain and IP address</li>
+	                <li><code>Ipconfig /displaydns</code> this displays the dns servers addresses for all of the sites I have recently visited</li>
+	                <li><code>ipconfig /flushdns</code> to empty the DNS cache</li>
+	            </ul>
+	
+	            <h4>Why use ip version 4</h4>
+	            <ul>
+	                <li>IPv4 has been the standard for IP addresses for decades</li>
+	                <li>It is easy to use and configure</li>
+	            </ul>
+	
+	            <h5>Example</h5>
+	            <ul>
+	                <li>You can plug most devices into a network and automatically obtain an IPv4 address</li>
+	                <li>It will probably be a private address, but that will allow you to connect to other devices on a network</li>
+	            </ul>
+	
+	            <h5>The other reason:</h5>
+	            <ul>
+	                <li>IPv6 is not yet universally implemented</li>
+	                <li>Even though the IPv4 address space is running out</li>
+	                <li>We are years, possibly decades, away from IPv6 becoming the de facto standard for networks</li>
+	            </ul>
+	
+	            <p>ipv4 address 4 numbers from 0 to 255 which represent 4 octets of binary numbers</p>
+	
+	            <h4>classes</h4>
+	            <p>The original intent of classes In ipv4 was to define network sizes based on ip address range</p>
+	        </article>
+
+        <article class="block">
+            <figure class="domain4-figure">
+                <img src="domain%204.2.rtfd/Pasted%20Graphic%209.png" alt="Pasted Graphic 9.png">
+            </figure>
+	        </article>
+	
+	        <article class="block">
+	            <p>Problem you may run into with ip is that you may have apps that use ipv6 but your network maybe be ipv4 only</p>
+	            <p>You can encapsulate ipv6 packets inside ipv4 data this is called ipv6 tunnelling</p>
+	
+	            <h3>IP v6tunneling</h3>
+	            <h4>On some Windows devices is Teredo</h4>
+	            <p>Provides IPv6 connectivity to IPv4 hosts</p>
+	
+	            <h4>ISATAP</h4>
+	            <p>Transmits IPv6 packets between dual-stack nodes on an IPv4 network</p>
+	
+	            <h4>6to4</h4>
+	            <p>Allows a router with a public IPv4 address to be an IPv6 gateway for a set of LANs</p>
+	
+	            <p>they allow ipv6 traffic to flow through ipv4 networks</p>
+	        </article>
+
+        <article class="block">
+            <figure class="domain4-figure">
+                <img src="domain%204.2.rtfd/Pasted%20Graphic%2010.png" alt="Pasted Graphic 10.png">
+            </figure>
+	        </article>
+	
+	        <article class="block">
+	            <h3>The ip address is the last 32 bits</h3>
+	
+	            <ul>
+	                <li>the subnet mask for a ip address defines the network portion and the host portion of an ip address</li>
+	                <li>the 255s represent the network portion of a ip address the 0 represents the host portion of the ip address which will be different for every device on this network</li>
+	            </ul>
+	
+	            <p>The first and last IP addresses in a range are reserved for the network address and broadcast address, respectively, so the number ranges available for devices in this subnet would be 1 to 254</p>
+	            <p>If the subnet mask were <code>255.255.0.0</code>, the 10.0 portion would be the host portion and you could have 65,534 devices on the network</p>
+	            <p><code>256 × 256 - 2 = 65,534</code></p>
+	
+	            <p>If the subnet mask were <code>255.0.0.0</code>, the 10 portion would be the host portion and you could have 16,777,214 devices on the network</p>
+	            <p><code>256 х 256 x 256 - 2 = 16,777,214</code></p>
+	
+	            <p>the purpose of a subnet mask is to determine the size of a subnet within a network</p>
+	
+	            <h4>in networking a default gateway is a device to where traffic not meant for the current network is sent this is almost always a router</h4>
+	            <ul>
+	                <li>without default gateway traffic doesnt leave your immediate network</li>
+	                <li>if you use DHCP to obtain ip address the default gateway should be included</li>
+	                <li>for any device where you are setting up the ip address statically you will also need yo know what the default gateway address is</li>
+	            </ul>
+	
+	            <h4>I want to see which ports are open for data transmission ill type <code>netstat -a</code> to show all ports</h4>
+	            <p>many are using the same ip address through ports a single ip address can be used to establish many connections and send data packets back and forth using these ports</p>
+	
+	            <h4>2 more ranges of ip addresses of note are multicast and reserved addresses</h4>
+	            <ul>
+	                <li>multicasts address are not asigned to a device they are used when one device needs to send the same data to multiple devices at once</li>
+	                <li>ip address range for multicast is 224-239</li>
+	                <li>240-255 for experimental purposes</li>
+	                <li><code>255.255.255.255</code> is the overall broadcast address</li>
+	                <li>data sent to this address is sent to every device on a network this is done when for example a device needs to know the Mac of a deice with a certain ip it asks everyone on the network for a match</li>
+	                <li>ip addresses and their subnet masks fall into one of two types classful or classless</li>
+	            </ul>
+	        </article>
+
+        <article class="block">
+            <figure class="domain4-figure">
+                <img src="domain%204.2.rtfd/Pasted%20Graphic%2011.png" alt="Pasted Graphic 11.png">
+            </figure>
+	        </article>
+	
+	        <article class="block">
+	            <h3>Address that uses 127 is a loopback or diagnostic address</h3>
+	
+	            <h4>IPV6</h4>
+	            <ul>
+	                <li>ipv4 - 32bits in length</li>
+	                <li>Ipv6- 128 bits 128 binary 1s and 0s in length</li>
+	                <li>ipv6 addresses came to be because the world was running out of ipv4</li>
+	                <li>The total number of ipv4 addresses is about 4 bilion</li>
+	                <li>The total number of ipv6 addresses is 340 undecillion 3.4 times 10 to the power of 38</li>
+	            </ul>
+	
+	            <p><code>2001:80e4:4003:0000:0000:3e23:2a39:0001</code></p>
+	
+	            <h4>IPv6 subnetting</h4>
+	            <ul>
+	                <li>IPv6 networks have /64 prefixes</li>
+	                <li>The first 64 bits in an IPv6 address define that network The network address is the first 48 bits of the prefix or the first three groups of numbers</li>
+	                <li>The fourth group of numbers represent the subnet address</li>
+	                <li>The last four groups of numbers, the last 64 bits, represent the device address</li>
+	            </ul>
+	
+	            <ul>
+	                <li><code>ipconfig /release6</code> just to release the ipv6 addresses from this device</li>
+	                <li><code>Ipconfig /renew6</code> to renew some ipv6 addresses</li>
+	            </ul>
+	
+	            <h4>Why use ipv6</h4>
+	
+	            <h5>Security</h5>
+	            <ul>
+	                <li>IPsec is built into IPv6</li>
+	                <li>IPsec provides authentication and encryption on data</li>
+	                <li>This helps secure data transmissions</li>
+	            </ul>
+	
+	            <h5>Address space</h5>
+	            <ul>
+	                <li>128 bits</li>
+	                <li>3.4 x 10 ^ 38 possible addresses</li>
+	            </ul>
+	
+	            <p><code>2001:80e4:4003:0000:0000:3e23:2a39:0001</code></p>
+	            <ul>
+	                <li>There are 128 bits in an IPv6 address</li>
+	                <li>Writing out 128 binary numbers takes space and effort</li>
+	                <li>IPvб addresses are written with eight sets of four hexadecimal numbers instead</li>
+	            </ul>
+	
+	            <p>Hexadecimal numbers range from 0-9 and A-F</p>
+	            <p>any ipv6 address with a letter greater than f IS illegitimate</p>
+	
+	            <p><code>2001:80e4:4003:0000:0000:3e23:2a39:0001</code></p>
+	            <p><code>2001:80e4:4003::3e23:2a39:0001</code></p>
+	
+	            <h4>IPv6 address notation shortening</h4>
+	            <ul>
+	                <li>A contiguous group of four-zero blocks can be replaced with a double colon</li>
+	                <li>This can only be done once in an IPv6 address</li>
+	                <li>Two sets of zeros cannot be replaced with a double colon</li>
+	                <li><code>2001:0000:0000:eeee:ffff:0000:0000:0001</code></li>
+	                <li><code>2001::eeee:ffff:0000:0000:0001</code> or</li>
+	                <li><code>2001:0000:0000:eeee:ffff::0001t</code></li>
+	                <li><code>2001 ::eeee:ffff:0001</code> is not a possibility</li>
+	            </ul>
+	
+	            <p>leading zeros can be eliminated within a set of numbers</p>
+	        </article>
+
+        <article class="block">
+            <figure class="domain4-figure">
+                <img src="domain%204.2.rtfd/1__%23%24%21%40%25%21%23__Pasted%20Graphic.png" alt="1__#$!@%!#__Pasted Graphic.png">
+            </figure>
+	        </article>
+	
+	        <article class="block">
+	            <h3>A double colon represents all zeros</h3>
+	            <p>so the ports are coming from the local address of all zeros</p>
+	            <p>ipv6 has a group of reserved ip addresses just like ipv4</p>
+	        </article>
+
+        <article class="block">
+            <figure class="domain4-figure">
+                <img src="domain%204.2.rtfd/1__%23%24%21%40%25%21%23__Pasted%20Graphic%201.png" alt="1__#$!@%!#__Pasted Graphic 1.png">
+            </figure>
+	        </article>
+	
+	        <article class="block">
+	            <h3>Global unicast address in IPV6 is equivalent to a public ipv4 address</h3>
+	            <ul>
+	                <li>A unique local ipv6 address starts with a FC or FD</li>
+	                <li>They are also public ipv6 addresses but they are only routable within a single domain</li>
+	                <li>The link local ipv6 address starts with FE80 they are fairly equivalent to a private ipv4 address these addresses can communicate to other devices on the network but they are the most similar to APIPA addresses start with 169.254</li>
+	            </ul>
+	        </article>
+	
+	        <article class="block">
+	            <h3>Hypertext Transfer Protocol HTTP is the main protocol used for webpages</h3>
+	            <ul>
+	                <li>The secure version of http is https</li>
+	                <li>The difference is that data transmitted over http is not encrypted</li>
+	                <li>Https Is encrypted</li>
+	            </ul>
+	
+	            <h4>FTP this protocol is often used to upload and download files from a web server</h4>
+	            <ul>
+	                <li>http transmits over port <code>80</code></li>
+	                <li>Https port <code>444</code></li>
+	                <li>FTP port <code>21</code></li>
+	            </ul>
+	
+	            <h4>2 email protocols</h4>
+	            <ul>
+	                <li>Simple Mail Transfer Protocol (SMTP)</li>
+	                <li>An outgoing email protocol that runs on port <code>25</code></li>
+	                <li>Internet Message Access Protocol (IMAP)</li>
+	                <li>An incoming email protocol that runs on port <code>143</code></li>
+	            </ul>
+	
+	            <p>With IMAP, email accessed on a client device through an app such as Outlook stays on the email server on which it resides, as opposed to Post Office Protocol (POP3), which by default, would download email off a server and onto a client device</p>
+	            <p>With the advent of people using multiple devices to access email, email must stay in one location</p>
+	            <p>Thus, IMAP is in use far more than POP3 for an incoming email protocol</p>
+	        </article>
+	
+	        <article class="block">
+	            <h3>Domain name server (DNS)</h3>
+	            <ul>
+	                <li>Dns runs on port <code>53</code></li>
+	                <li>The main function is to map hostnames to ip addresses</li>
+	                <li>Using A records which is h0tname to ip address lookup records</li>
+	                <li>13 root dns servers worldwide which carry tables for all web addresses and update them as web domains are registered and assigned ip addresses</li>
+	            </ul>
+	
+	            <h4>Remote Desktop protocol (RDP)</h4>
+	            <ul>
+	                <li>Used to connect one device to another remotely runs on port <code>3389</code></li>
+	            </ul>
+	
+	            <h4>and Secure shell (SSH)</h4>
+	            <ul>
+	                <li>It is often used to connect a device such as this to a hardware device such as s a router and it can also be used to connect one device to another</li>
+	                <li>ssh runs on port <code>22</code> it is encrypted and thus secure</li>
+	                <li>Telnet another protocol used to connect to devices is not secure</li>
+	            </ul>
+	
+	            <p>Dns is the service of choice for resolving hostnames to ip addresses</p>
+	            <p>In a windows environment DNS is set up when Active Directory is setup</p>
+	            <p>Or DNS can be installed as a role on a server that is not domain controller</p>
+	            <p>To find out what dns server you’re running run the <code>ipconfig /all</code> command</p>
+	
+	            <h4>Typer of resource records</h4>
+	            <ul>
+	                <li>A record resolve host names to io addresses specifically ipv4 addresses</li>
+	                <li>AAAA or quad A records resolve hostnames to ipv6 addresses</li>
+	                <li>PTR records do the opposite resolve ip addresses to fully qualified domain names</li>
+	                <li>CNAME records canonical name records create aliases for host names this allows users to access a machine by a potentially easier to understand name</li>
+	                <li>MX records main exchanger are records used to indicate main servers used in a network</li>
+	                <li>CNAME and MX must be entered manually</li>
+	                <li>SOA records contain data for DNS zones which are parts of a domain each DNS server is responsible for</li>
+	            </ul>
+	
+	            <h4>Windows Internet Name Service</h4>
+	            <p>(WINS)</p>
+	            <ul>
+	                <li>Resolves NetBIOS names to IP addresses</li>
+	                <li>The common method used to resolve hostnames to IP addresses before DNS came to the forefront</li>
+	                <li>Only see WINS used on apps that were most likely built a long time ago and still use WINS</li>
+	                <li>Most of the time now, DNS is the preferred method of resolving hostnames to IP addresses</li>
+	            </ul>
+	        </article>
+
+        <article class="block">
+            <figure class="domain4-figure">
+                <img src="domain%204.2.rtfd/1__%23%24%21%40%25%21%23__Pasted%20Graphic%202.png" alt="1__#$!@%!#__Pasted Graphic 2.png">
+            </figure>
+	        </article>
+	
+	        <article class="block">
+	            <h3>Before DNS became popular HOSTS files were used to resolve hostnames to ip addresses</h3>
+	            <p>They were tough to manage as they needed to be updated frequently</p>
+	            <p>Now they are used under special circumstances such as wanting to have a hostname map to specific ip addresses but not having a entry in a DNS table for it or having a private network with no dns server on it</p>
+	            <p>LMHOSTS files resolve IP addresses to NetBIOS names on device</p>
+	
+	            <h4>nslookup command looks ip DNS information on a entity and you may not have a dns server in front of you</h4>
+	            <p>It will give you a dns server which you’re connected to and also puts you in nslookup mode where we can lookup dns information on other entities</p>
+	            <p>By default it returns A type records</p>
+	            <ul>
+	                <li>Set type = mx to have mail exchange records</li>
+	                <li>Exit to leave nslookup</li>
+	            </ul>
+	        </article>
+	
+	        <article class="block">
+	            <h3>Network services</h3>
+	
+	            <h4>DHCP Dynamic host configuration protocol</h4>
+	            <ul>
+	                <li>It provides ip addresses for clients connecting to a network on larger networks its usually handled by a windows server in smaller networks a wireless access point server as a DHCP server</li>
+	                <li>Address pool must be defined</li>
+	                <li>Make sure the addresses in the pool are not already statically assigned to devices</li>
+	                <li>Lease time for ip address the default is 8 days</li>
+	                <li>A client will attempt to renew a ip address lease pre the lease is halfway up</li>
+	                <li>And if a DHCP server fails the clients that have a lease will continue to function while new ones will not be able to get a lease</li>
+	            </ul>
+	
+	            <h4>Network Address Translation or NAT</h4>
+	            <ul>
+	                <li>Allows devices with private IP addresses to use public IP addresses to communicate with other networks</li>
+	                <li>Private IP addresses are not routable, meaning that data from these devices will not route to other networks, namely the internet</li>
+	                <li>Until NAT appeared on the scene</li>
+	                <li>The most common form of NAT is Port Address</li>
+	                <li>Translation (PAT)</li>
+	            </ul>
+	
+	            <h5>PAT</h5>
+	            <ul>
+	                <li>The most common form of NAT is Port Address</li>
+	                <li>Translation (PAT)</li>
+	                <li>Any data request from a private IP address is assigned a port number</li>
+	                <li>The data request is then translated to the public IP</li>
+	                <li>address this device has and is routed where it needs to go When data is returned, this device knows the port number for the return data and then translates the address back to the private IP address of the original recipient and sends the data to that address With over 65,000 port numbers available, this literally allows up to 65,000 devices with private IP addresses to share one public IP address for routing purposes</li>
+	            </ul>
+	
+	            <h5>Static NAT</h5>
+	            <ul>
+	                <li>A one-to-one mapping between a private IP address and a public IP address</li>
+	                <li>For this to work, there needs to be a public IP address available for every device with a private IP address For this reason, it is not commonly used in networks</li>
+	            </ul>
+	
+	            <h5>Dynamic NAT</h5>
+	            <ul>
+	                <li>A many-to-many mapping between private IP addresses and public IP addresses to where a pool of public IP addresses is used, and when a device with a private IP address needs to use a public IP address, it does, so long as there is a public IP address available</li>
+	                <li>When the connection is done, the public IP address goes back into the pool, waiting to be used again</li>
+	                <li>PAT is by far the most common form of NAT used, and it is set up by default on many routers, especially small office/home office routers</li>
+	            </ul>
+	
+	            <p>On most firewalls inbound connections tend to be block and outbound connections tend to be allowed</p>
+	            <p>You may need to open an inbound port to let an app through</p>
+	            <p>Remote access can be defined 2 different ways in a networking environment</p>
+	            <p>Remote access to networks or to a specific device</p>
+	        </article>
+
+        <article class="block">
+            <figure class="domain4-figure">
+                <img src="domain%204.2.rtfd/1__%23%24%21%40%25%21%23__Pasted%20Graphic%203.png" alt="1__#$!@%!#__Pasted Graphic 3.png">
+            </figure>
+        </article>
+    </section>
+
+
+
+    <!-- DOMAIN 5 -->
+    <section class="domain" id="domain5">
+        <h1>Domain 5</h1>
+
+        <article class="block">
+            <pre class="domain4-text">Domain 5:
+
+Troubleshooting is a 7 step process
+
+Step one: Identify the problem
+In this, we probably need to ask open-ended questions to try to figure out why a network connection is not working
+Is the problem isolated to one user?
+Is an entire building affected?
+Networking
+A problem cannot be solved unless we know what the problem is
+
+Step two: Establish a theory of probable cause This is a fancy way of saying, find out what caused the problem
+Did something get unplugged?
+Is there a misconfiguration?
+Was a rogue device added to the network to cause a network attack?
+
+Step three: Test the theory
+Can we duplicate the problem?
+If we can, it might make it easier to find a solution
+
+Step four: Establish a plan to solve the problem
+Is this an easy fix?
+Are we going to need to reboot a server or do something else that will disrupt services temporarily?
+
+In order to solve a problem, we need to have an idea as to how to solve it
+
+Step five: Implement the solution or escalate it as necessary
+Here, we need to understand a very important point: If you are the one trying to solve a problem and get stuck as to how to do it, escalate it
+Most network problems are very time-sensitive, and taking too much time to fix something when someone else can do it faster can cause major problems in timing, data loss, lost revenue, and frustrated employees
+
+Step six: Verify that the solution worked
+Before declaring to a customer that a problem is solved, test out the solution
+Make sure that the original problem cannot be replicated
+
+Step seven: Document the solution
+Many companies use some kind of help desk ticketing software, SharePoint site, or even a database to track problems and solutions
+Make sure a solution is detailed enough so that someone else, should they encounter the same problem, has an idea of what to do
+
+
+Etiquette/ Professional Conduct
+Avoid jargon
+Explanations to customers should be clear and concise
+Maintain a positive attitude
+Project confidence
+Assure customers that the problem will be solved and be honest about the time it may take
+Set realistic expectations, even when dealing with difficult customers
+Listen actively
+Avoid interrupting the customer
+
+Be culturally sensitive
+Use titles when possible
+Be on time
+Avoid distractions
+Such as personal phone calls, text messages, or social media
+Keep confidential data confidential
+Avoid the temptation to look at data that should not be viewed
+
+
+a multimeter is a tool used to measure electrical current specifically voltage current and resistance
+
+
+with a cable tester one can plug both ends of an Ethernet cable into a tester and learn
+
+﻿﻿﻿Whether it is a straight-through or crossover cable
+Networking
+﻿﻿﻿Whether there is a break in the cable
+As we cannot always see a physical break in a
+If the cable is fine and no connection start looking at network
+
+
+Tone generator also known as a Toner probe
+
+Toner probe
+Traces a copper cable wire in a wall
+A two-piece tool in which a tone generator is connected to one end of a cable connection
+Then a toner probe is connected to the other end
+A tone is generated when a connection is made If there is no tone, chances are there is a problem with the cable
+Tone generators
+Also used to find out which cable is terminated in which spot in a 110 block
+Necessary task if the cables are not properly labeled in the first place
+
+Time Domain Reflectometer (TDR), Optical TDR (OTDR)
+An optical time domain reflectometer (OTDR)
+A tool that is used to find faults in fiber-optic cables, specifically kinks and breaks in the cable
+
+Here is how it works
+A signal is sent down the cable
+If the signal goes through, the cable can handle a signal just fine If there is a break, the signal will bounce off the break and back to its origin
+OTDRs can also measure cable length and overall attenuation, which is the loss of signal over distance
+
+An OTDR tool performs these actions by reading the optical fiber, also known as a light meter
+
+The copper cable equivalent of an OTDR is simply a time domain reflectometer TDR
+
+
+Command line tools
+
+Ping is used to see if we can reach a destination
+
+If we are to get destination host unreachable message that would signal a connectivity problem
+ping -t this will keep pinging until ctrl+c
+
+Ping -n specified number of times
+
+The latter 2 pings are often used when you need a larger sample size of pings due to some volatility in a network connection
+
+Tracert short for trace route 
+
+We are seeing each router each hop on the way from this device to destination
+
+Used to possibly troubleshoot where data is having trouble reaching a destination
+if you see a bunch of asterisks here instead of return times you can deduce that the problem Is with that particular router or its just looking for another route
+
+This tool is used to troubleshoot intermittent connectivity problems
+
+Pathping is the combination of ping and Tracert 
+It takes several minutes to complete
+
+If you see a high percentage of dropped packets anywhere its probably a strong indicator of where you might be having connectivity issues
+
+Routers make very quick decisions in their routing tables on where to send packets if a router cannot decide where to send a packet it simply drops it
+a high percentage of dropped packets indicate a routing table that needs updating and or rebuilding
+
+Telnet is a command-line tool used to connect remotely to devices
+It used to be very popular within Windows
+The problem with Telnet, though, is that it is not secure Data using a Telnet connection, including usernames and passwords, transmits in cleartext
+This means that any data going over a Telnet connection is a prime target to be intercepted and used in a negative way
+
+Telnet is not enabled by default in Windows for that reason
+
+Instead you should use SSH whenever possible
+
+Unlike Telnet, SSH data transmissions are encrypted, meaning the data, including usernames and passwords, does not transmit in cleartext
+
+
+Ipconfig /? Different options for ipconfig 
+
+Netstat displays network statistics including open and listening ports and protocol statistics 
+
+Netstat /? For options
+
+-a displays all connections and listening ports
+-p to specify connections by protocol 
+-s to display per protocol statistics
+
+
+Reserved address ranges
+
+Ipconfig/all  ip address information for all adapters on this device
+
+Apia range of 169.254
+
+The 127 range of addresses is used for local loopback ip addresses and thus you will see those assigned to anyone
+
+Protocols</pre>
+        </article>
+
+        <article class="block">
+            <figure class="domain4-figure">
+                <img src="Domain%205.rtfd/Pasted%20Graphic.png" alt="Pasted Graphic.png">
+            </figure>
+        </article>
+
+        <article class="block">
+            <figure class="domain4-figure">
+                <img src="Domain%205.rtfd/Pasted%20Graphic%201.png" alt="Pasted Graphic 1.png">
+            </figure>
+        </article>
+
+        <article class="block">
+            <figure class="domain4-figure">
+                <img src="Domain%205.rtfd/Pasted%20Graphic%202.png" alt="Pasted Graphic 2.png">
+            </figure>
+        </article>
+
+        <article class="block">
+            <figure class="domain4-figure">
+                <img src="Domain%205.rtfd/Pasted%20Graphic%203.png" alt="Pasted Graphic 3.png">
+            </figure>
+        </article>
+
+        <article class="block">
+            <pre class="domain4-text">Linux commands
+Ping on linux same as on windows
+Ip addr which shows ip address for each network adapter
+
+Traceroute is similar to tracers in Windows as it shows a complete path from a source to a destination
+
+Tracepath shows the actual address of each destination on the path to a final destination
+
+Dig command is similar to nslookup
+Location of current dns server and 13 root servers
+
+Host performs DNS lookups
+
+Netstat shows open and listening ports
+
+Arp command shows addresses and accompanying MAC addresses</pre>
+        </article>
+    </section>
+
+</main>
+
+<!-- Highlight.js core -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+</body>
+</html>
